@@ -11,6 +11,7 @@
 #define MAX_HOURS 99
 #define MINUTES_IN_HOUR 60
 #define SECONDS_IN_MINUTE 60
+#define EPISODE_STRING_LENGTH 8
 
 
 typedef struct Episode {
@@ -584,6 +585,11 @@ int validLength(char *lengthString) {
     int maxValues[3] = {MAX_HOURS, MINUTES_IN_HOUR - 1, SECONDS_IN_MINUTE - 1};
     int index = 0;
     int part;
+
+    // Ensure length is according to format
+    if (strlen(lengthString) != EPISODE_STRING_LENGTH) {
+        return 0;
+    }
 
     for (part = 0; part < 3; part++) {
         // Ensure current character is a digit
