@@ -755,6 +755,7 @@ void printShow() {
     }
 
     printf("Name: %s\n", show->name);
+    printf("Seasons:\n");
 
     Season *season = show->seasons;
     int seasonIndex = 0;
