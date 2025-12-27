@@ -433,7 +433,7 @@ void addShow() {
         return;
 
     if (doesShowExist(showName) != INVALID_INDEX) {
-        printf("Show already exists\n");
+        printf("Show already exists.\n");
         free(showName);
 
         return;
@@ -532,7 +532,7 @@ void addSeason() {
         return;
 
     if (findSeason(show, seasonName) != NULL) {
-        printf("Season already exists\n");
+        printf("Season already exists.\n");
         free(seasonName);
 
         return;
