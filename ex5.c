@@ -39,7 +39,6 @@ int getInt();
 
 int validLength(char *s);
 char* getEpisodeLength();
-int countShows();
 
 void shrinkDB();
 void expandDB();
@@ -51,7 +50,6 @@ void freeSeason(Season *s);
 void freeShow(TVShow *show);
 void freeAll();
 
-TVShow *findShow(char *name);
 Season *findSeason(TVShow *show, char *name);
 Episode *findEpisode(Season *season, char *name);
 
@@ -151,23 +149,18 @@ char *getString() {
     do {
         character = getchar();
 
+        string = (char *)realloc(string, (length + 1) * sizeof(char));
+
+        if (string == NULL)
+            return NULL;
+
         if (character != '\n') {
-            string = (char *)realloc(string, (length + 1) * sizeof(char));
-
-            if (string == NULL)
-                return NULL;
-
             string[length] = character;
             length++;
+        } else {
+            string[length] = '\0';
         }
     } while (character != '\n');
-
-    string = (char *)realloc(string, (length + 1) * sizeof(char));
-    
-    if (string == NULL)
-        return NULL;
-
-    string[length] = '\0';
 
     return string;
 }
@@ -581,6 +574,7 @@ void deleteSeason() {
     show->seasons = updatedSeason.next;
 }
 
+// Validates that the episode length string matches the exact format 0-99:0-59:0-59.
 int validLength(char *lengthString) {
     int maxValues[3] = {MAX_HOURS, MINUTES_IN_HOUR - 1, SECONDS_IN_MINUTE - 1};
     int index = 0;
@@ -591,35 +585,30 @@ int validLength(char *lengthString) {
         return 0;
     }
 
-    for (part = 0; part < 3; part++) {
-        // Ensure current character is a digit
-        if (lengthString[index] < '0' || lengthString[index] > '9') {
+    for (int part = 0; part < 3; part++) {
+        // Ensure exactly two characters at the current position are digits
+        if (lengthString[index] < '0' || lengthString[index] > '9' ||
+            lengthString[index + 1] < '0' || lengthString[index + 1] > '9') {
             return 0;
         }
 
+        // Convert the two-digit string to integer
         int value = atoi(lengthString + index);
-
+        
+        // Validate the value based on the part
         if (value < 0 || value > maxValues[part]) {
             return 0;
         }
 
-        // Skip digits
-        while (lengthString[index] >= '0' && lengthString[index] <= '9') {
-            index++;
-        }
+        index += 2;
 
-        // Check separator
         if (part < 2) {
-            // Hours and Minutes must be followed by ':'
+            // Ensure hours and minutes are followed by a colon
             if (lengthString[index] != ':') {
                 return 0;
             }
-            index++;
-        } else {
-            // Seconds must be followed by end of string
-            if (lengthString[index] != '\0') {
-                return 0;
-            }
+
+            index++; // Advance past the colon
         }
     }
 
