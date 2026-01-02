@@ -578,7 +578,6 @@ void deleteSeason() {
 int validLength(char *lengthString) {
     int maxValues[3] = {MAX_HOURS, MINUTES_IN_HOUR - 1, SECONDS_IN_MINUTE - 1};
     int index = 0;
-    int part;
 
     // Ensure length is according to format
     if (strlen(lengthString) != EPISODE_STRING_LENGTH) {
